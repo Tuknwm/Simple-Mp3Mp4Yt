@@ -1,0 +1,60 @@
+// _typography.scss
+
+@font-face {
+    font-family: 'KleeOne';
+    src: url('../assets/fonts/KleeOne-SemiBold.woff2') format('woff2');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Doto-Medium';
+    src: url('../assets/fonts/Doto-Medium.woff2') format('woff2');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+// CSS Variables
+:root {
+    --bg: #F8F9FA;
+    --bg-panel: transparent;
+    --red: #111;
+    --red-dark: #000;
+    --text: #1a1a1a;
+    --text-muted: #999;
+    --border: #ddd;
+    --border-focus: #111;
+    --border-light: rgba(26, 26, 26, 0.08);
+}
+
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    font-family: 'KleeOne', serif;
+    font-weight: 500;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+b,
+strong {
+    font-family: 'KleeOne', serif;
+    font-weight: 400;
+}

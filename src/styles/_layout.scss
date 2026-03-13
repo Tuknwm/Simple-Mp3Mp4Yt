@@ -1,0 +1,166 @@
+// _layout.scss
+
+.app {
+    display: flex;
+    min-height: 100vh;
+}
+
+// ── Left panel ────────────────────────────────
+.info-panel {
+    width: 50%;
+    min-height: 100vh;
+    display: flex;
+    align-items: stretch;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+}
+
+.info-inner {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 12vw 8vw;
+    width: 100%;
+}
+
+.info-top {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.info-title {
+    font-family: 'KleeOne', serif;
+    font-size: clamp(40px, 5vw, 64px);
+    line-height: 1.1;
+    color: var(--text);
+    font-weight: 400;
+}
+
+.info-email {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.info-bottom-wrapper {
+    display: flex;
+    gap: 60px;
+}
+
+.info-col {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.col-title {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: var(--text);
+}
+
+.col-links {
+    display: flex;
+    gap: 12px;
+
+    a {
+        font-size: 11px;
+        color: var(--text-muted);
+        text-decoration: none;
+        letter-spacing: 2px;
+        transition: color 0.2s;
+
+        &:hover {
+            color: var(--text);
+        }
+    }
+}
+
+.col-desc {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+// ── Right panel ───────────────────────────────
+.form-panel {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    padding: 12vw 8vw;
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    // border: 2px solid red;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+.form-inner {
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-title {
+    font-size: 24px;
+    margin-bottom: 48px;
+    color: var(--text);
+}
+
+// ── Responsive ────────────────────────────────
+@media (max-width: 768px) {
+    .app {
+        flex-direction: column;
+    }
+
+    .info-panel {
+        width: 100%;
+        min-height: auto;
+        height: auto;
+        position: static;
+    }
+
+    .info-inner,
+    .form-panel {
+        padding: 40px 28px;
+    }
+
+    .info-bottom-wrapper {
+        flex-direction: column;
+        gap: 32px;
+    }
+}
+
+// Doge
+.doge-img {
+    width: 200px;
+    aspect-ratio: 1;
+    object-fit: cover;
+    display: block;
+    margin-top: 24px;
+    margin-bottom: 8px;
+    border-radius: 12px;
+    -webkit-user-drag: none;
+}
+
+.col-links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+html,
+body {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}

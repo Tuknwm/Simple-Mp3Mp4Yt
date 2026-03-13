@@ -1,0 +1,222 @@
+// _form.scss
+
+// ── Field ─────────────────────────────────────
+.field {
+    margin-bottom: 32px;
+    // border: 2px solid red;
+}
+
+.field-label {
+    display: block;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text);
+    margin-bottom: 12px;
+}
+
+.field-input-wrap {
+    position: relative;
+    // border: 2px solid red;
+    display: flex;
+    gap: 10px;
+}
+
+.field-input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    padding: 0 36px 8px 0;
+    font-family: 'KleeOne', serif;
+    font-size: 14px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+
+    &::placeholder {
+        color: var(--text-muted);
+    }
+
+    &:focus {
+        border-bottom-color: var(--border-focus);
+    }
+}
+
+.clear-btn {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 20px;
+    color: var(--text-muted);
+    transition: color 0.2s;
+
+    &:hover {
+        color: var(--text);
+    }
+}
+
+// ── Format options ────────────────────────────
+.format-options {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+}
+
+.format-opt {
+    font-size: 20px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: color 0.2s;
+    user-select: none;
+
+    &:hover,
+    &.active {
+        color: black;
+        text-decoration: underline;
+        text-underline-offset: 6px;
+        text-underline-thickness: 2px;
+    }
+}
+
+.format-sep {
+    color: var(--border);
+    font-size: 14px;
+}
+
+// ── Submit button ─────────────────────────────
+.submit-btn {
+    margin-top: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0;
+    color: var(--text);
+    font-family: 'KleeOne', serif;
+    font-size: 20px;
+    // text-decoration: underline;
+    // text-underline-offset: 6px;
+    transition: gap 0.2s;
+
+    &:hover {
+        gap: 16px;
+    }
+
+    &:disabled {
+        color: var(--text-muted);
+        cursor: not-allowed;
+    }
+}
+
+.submit-arrow {
+    display: inline-block;
+    font-size: 16px;
+    text-decoration: none;
+}
+
+// ── Status ────────────────────────────────────
+.status {
+    margin-top: 20px;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-decoration: underline;
+    text-underline-offset: 6px;
+    text-underline-thickness: 2px;
+    color: red !important;
+    min-height: 16px;
+
+    &.error {
+        color: var(--red);
+    }
+
+    &.success {
+        color: #4caf50;
+    }
+}
+
+// ── Progress ──────────────────────────────────
+.progress {
+    display: none;
+    margin-top: 24px;
+    gap: 10px;
+    flex-direction: column;
+
+    &.visible {
+        display: flex;
+    }
+}
+
+.progress-track {
+    width: 100%;
+    height: 1px;
+    background: var(--border-light);
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--red);
+    width: 0%;
+    transition: width 0.4s ease;
+
+    &.indeterminate {
+        width: 35%;
+        animation: indeterminate 1.2s ease-in-out infinite;
+    }
+}
+
+@keyframes indeterminate {
+    0% {
+        transform: translateX(-100%);
+    }
+
+    100% {
+        transform: translateX(350%);
+    }
+}
+
+.progress-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+// ── Download link ─────────────────────────────
+.dl-link {
+    display: none;
+    margin-top: 24px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    text-decoration: none;
+    font-family: 'KleeOne', serif;
+    font-size: 16px;
+    transition: color 0.2s;
+
+    span:last-child {
+        font-size: 20px;
+        transition: transform 0.2s;
+    }
+
+    &:hover {
+        color: var(--red);
+
+        span:last-child {
+            transform: translateY(3px);
+        }
+    }
+
+    &.visible {
+        display: flex;
+    }
+}
