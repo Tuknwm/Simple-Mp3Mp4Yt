@@ -1,0 +1,149 @@
+// _transition.scss
+
+.page {
+    display: none;
+    width: 100%;
+    min-height: 100vh;
+    will-change: transform, opacity, filter;
+
+    &.page-active {
+        display: flex;
+        width: 100%;
+    }
+
+    &.page-enter {
+        animation: whooshInFromRight 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    &.page-enter-left {
+        animation: whooshInFromLeft 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    &.page-exit {
+        pointer-events: none;
+        animation: whooshOutToLeft 0.42s cubic-bezier(0.55, 0, 1, 0.7) forwards;
+    }
+
+    &.page-exit-right {
+        pointer-events: none;
+        animation: whooshOutToRight 0.42s cubic-bezier(0.55, 0, 1, 0.7) forwards;
+    }
+}
+
+@keyframes whooshOutToLeft {
+    0% {
+        opacity: 1;
+        transform: translateX(0) scaleX(1);
+        filter: blur(0px);
+    }
+
+    30% {
+        transform: translateX(-4%) scaleX(0.98);
+        filter: blur(5px);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateX(-22%) scaleX(0.92);
+        filter: blur(22px);
+    }
+}
+
+@keyframes whooshInFromRight {
+    0% {
+        opacity: 0;
+        transform: translateX(22%) scaleX(0.92);
+        filter: blur(22px);
+    }
+
+    40% {
+        opacity: 1;
+        filter: blur(5px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0) scaleX(1);
+        filter: blur(0px);
+    }
+}
+
+@keyframes whooshOutToRight {
+    0% {
+        opacity: 1;
+        transform: translateX(0) scaleX(1);
+        filter: blur(0px);
+    }
+
+    30% {
+        transform: translateX(4%) scaleX(0.98);
+        filter: blur(5px);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateX(22%) scaleX(0.92);
+        filter: blur(22px);
+    }
+}
+
+@keyframes whooshInFromLeft {
+    0% {
+        opacity: 0;
+        transform: translateX(-22%) scaleX(0.92);
+        filter: blur(22px);
+    }
+
+    40% {
+        opacity: 1;
+        filter: blur(5px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0) scaleX(1);
+        filter: blur(0px);
+    }
+}
+
+.page>.app {
+    width: 100%;
+}
+
+// ── Intro stagger ──────────────────────────────
+@keyframes fadeSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.intro-animate {
+    opacity: 0;
+    animation: fadeSlideUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.intro-d1 {
+    animation-delay: 0.2s;
+}
+
+.intro-d2 {
+    animation-delay: 0.38s;
+}
+
+.intro-d3 {
+    animation-delay: 0.52s;
+}
+
+.intro-d4 {
+    animation-delay: 0.64s;
+}
+
+.intro-d5 {
+    animation-delay: 0.76s;
+}

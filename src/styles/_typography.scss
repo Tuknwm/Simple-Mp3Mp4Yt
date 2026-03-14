@@ -16,6 +16,14 @@
     font-display: swap;
 }
 
+@font-face {
+    font-family: 'KronaOne';
+    src: url('../assets/fonts/KronaOne-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
 // CSS Variables
 :root {
     --bg: #F8F9FA;
@@ -57,4 +65,17 @@ b,
 strong {
     font-family: 'KleeOne', serif;
     font-weight: 400;
+}
+
+.info-title {
+    font-family: 'KronaOne', sans-serif !important;
+    font-weight: 400 !important;
+    letter-spacing: -0.02em;
+}
+
+.title-stroke-layer,
+.title-fill-layer {
+    font-family: 'KronaOne', sans-serif;
+    font-weight: 400;
+    letter-spacing: -0.02em;
 }

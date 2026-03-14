@@ -4,8 +4,20 @@ export default defineConfig({
     css: {
         preprocessorOptions: {
             scss: {
-                // silence deprecation warnings from sass
                 silenceDeprecations: ['legacy-js-api'],
+            }
+        }
+    },
+
+    server: {
+        open: '/loading.html',
+    },
+
+    build: {
+        rollupOptions: {
+            input: {
+                main: 'loading.html',
+                app: 'index.html'
             }
         }
     }

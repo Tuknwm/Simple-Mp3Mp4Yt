@@ -1,0 +1,61 @@
+// _navbar.scss
+
+.navbar {
+    position: fixed;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background: rgba(248, 249, 250, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 6px 8px;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 18px;
+    border-radius: 999px;
+    font-family: 'KleeOne', serif;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    cursor: pointer;
+    border: none;
+    background: none;
+    transition: color 0.2s, background 0.2s;
+    user-select: none;
+    white-space: nowrap;
+
+    svg {
+        width: 14px;
+        height: 14px;
+        fill: currentColor;
+        flex-shrink: 0;
+    }
+
+    &:hover {
+        color: var(--text);
+    }
+
+    &.active {
+        background: var(--text);
+        color: var(--bg);
+    }
+}
+
+.nav-sep {
+    width: 1px;
+    height: 16px;
+    background: var(--border);
+    margin: 0 2px;
+}

@@ -3,10 +3,15 @@
 
 <head>
   <meta charset="UTF-8" />
+  <script>
+    if (document.referrer === '' || (!document.referrer.includes('loading.html') && sessionStorage.getItem('loaded') !== '1')) {
+      window.location.replace('/loading.html')
+    }
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>KuroKyuYT</title>
+  <title>KuroKyu</title>
   <link rel="stylesheet" href="/src/styles/main.scss" />
-  <link rel="icon" type="image/jpeg" href="/src/assets/doge.jpeg">
+  <link rel="icon" type="image/jpeg" href="/src/assets/doge.jpg">
   <style>
     .info-title {
       font-size: clamp(52px, 7vw, 88px) !important;
@@ -28,6 +33,47 @@
       font-size: 13px !important;
     }
 
+    .deco-logo {
+      position: fixed;
+      right: -100px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 220px;
+      height: 220px;
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+      overflow: visible;
+    }
+
+    .deco-logo.visible {
+      opacity: 1;
+    }
+
+    .deco-logo svg {
+      width: 100%;
+      height: 100%;
+      fill: none;
+      stroke: var(--text);
+      stroke-width: 3px;
+      opacity: 0.08;
+    }
+
+    /* animate logo stroke draw on page enter */
+    .deco-logo.visible svg path,
+    .deco-logo.visible svg .deco-path {
+      stroke-dasharray: 2000;
+      stroke-dashoffset: 2000;
+      animation: decoStroke 1.8s cubic-bezier(0.4, 0, 0.2, 1) 0.3s forwards;
+    }
+
+    @keyframes decoStroke {
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+
     @keyframes spin {
       to {
         transform: rotate(360deg);
@@ -44,132 +90,134 @@
       animation: spin 0.7s linear infinite;
       vertical-align: middle;
     }
+
+    .title-stroke-wrap {
+      display: block;
+      line-height: 1.05;
+      position: relative;
+    }
+
+    .title-stroke-layer {
+      display: block;
+      color: transparent;
+      -webkit-text-stroke: 1.8px var(--text);
+      animation: strokeAppear 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      position: relative;
+      visibility: visible;
+    }
+
+    .title-fill-layer {
+      display: block;
+      color: var(--text);
+      -webkit-text-stroke: 0px transparent;
+      clip-path: inset(0 100% 0 0);
+      animation: fillReveal 0.9s cubic-bezier(0.76, 0, 0.24, 1) 0.55s forwards;
+      position: absolute;
+      inset: 0;
+      white-space: nowrap;
+    }
+
+    @keyframes strokeAppear {
+      0% {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fillReveal {
+      0% {
+        clip-path: inset(0 100% 0 0);
+      }
+
+      100% {
+        clip-path: inset(0 0% 0 0);
+      }
+    }
   </style>
 </head>
 
 <body>
 
 
-  <canvas id="paperGrain" style="
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  pointer-events: none;
-  z-index: 9998;
-  opacity: 0.35;
-"></canvas>
 
+  <canvas id="paperGrain"
+    style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9998;opacity:0.35;"></canvas>
   <script>
     (function () {
       const canvas = document.getElementById('paperGrain')
       const ctx = canvas.getContext('2d')
-
-      const CONFIG = {
-        opacity: 0.1,
-        fps: 12,
-        grainSize: 1,
-      }
-
+      const CONFIG = { opacity: 0.1, fps: 12, grainSize: 1 }
       canvas.style.opacity = CONFIG.opacity
-
       let lastFrame = 0
-
-      function resize() {
-        canvas.width = window.innerWidth
-        canvas.height = window.innerHeight
-      }
-      resize()
-      window.addEventListener('resize', resize)
-
+      function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight }
+      resize(); window.addEventListener('resize', resize)
       function drawGrain() {
-        const w = canvas.width
-        const h = canvas.height
-        const imageData = ctx.createImageData(w, h)
-        const data = imageData.data
-
-        for (let i = 0; i < data.length; i += 4) {
-          const v = Math.random() * 255 | 0
-          data[i] = v
-          data[i + 1] = v
-          data[i + 2] = v
-          data[i + 3] = 255
-        }
+        const w = canvas.width, h = canvas.height
+        const imageData = ctx.createImageData(w, h); const data = imageData.data
+        for (let i = 0; i < data.length; i += 4) { const v = Math.random() * 255 | 0; data[i] = v; data[i + 1] = v; data[i + 2] = v; data[i + 3] = 255 }
         ctx.putImageData(imageData, 0, 0)
-
-        if (CONFIG.grainSize > 1) {
-          const gs = CONFIG.grainSize
-          const temp = document.createElement('canvas')
-          temp.width = Math.ceil(w / gs)
-          temp.height = Math.ceil(h / gs)
-          const tctx = temp.getContext('2d')
-          tctx.drawImage(canvas, 0, 0, temp.width, temp.height)
-          ctx.clearRect(0, 0, w, h)
-          ctx.imageSmoothingEnabled = false
-          ctx.drawImage(temp, 0, 0, w, h)
-        }
+        if (CONFIG.grainSize > 1) { const gs = CONFIG.grainSize; const temp = document.createElement('canvas'); temp.width = Math.ceil(w / gs); temp.height = Math.ceil(h / gs); const tctx = temp.getContext('2d'); tctx.drawImage(canvas, 0, 0, temp.width, temp.height); ctx.clearRect(0, 0, w, h); ctx.imageSmoothingEnabled = false; ctx.drawImage(temp, 0, 0, w, h) }
       }
-
-      function loop(ts) {
-        requestAnimationFrame(loop)
-        if (ts - lastFrame < 1000 / CONFIG.fps) return
-        lastFrame = ts
-        drawGrain()
-      }
-
+      function loop(ts) { requestAnimationFrame(loop); if (ts - lastFrame < 1000 / CONFIG.fps) return; lastFrame = ts; drawGrain() }
       loop(0)
     })()
   </script>
 
-  <canvas id="mouseTrail" style="
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  pointer-events: none;
-  z-index: 9999;
-"></canvas>
-
+  <canvas id="mouseTrail"
+    style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;"></canvas>
   <script>
       (function () {
         const canvas = document.getElementById('mouseTrail')
         const ctx = canvas.getContext('2d')
-
-        const CONFIG = {
-          color: '#111111',
-          maxPoints: 50,
-          dashSize: 5,
-          gapSize: 10,
-          maxWidth: 5,
-        }
+        const CONFIG = { color: '#111111', maxPoints: 50, dashSize: 5, gapSize: 10, maxWidth: 5 }
 
         let points = []
+        let mouseX = -999, mouseY = -999
+        let isIdle = false
+        let idleTimer = null
 
-        function resize() {
-          canvas.width = window.innerWidth
-          canvas.height = window.innerHeight
-        }
-        resize()
-        window.addEventListener('resize', resize)
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight }
+        resize(); window.addEventListener('resize', resize)
 
         document.addEventListener('mousemove', e => {
-          points.push({ x: e.clientX, y: e.clientY })
+          mouseX = e.clientX; mouseY = e.clientY
+          isIdle = false
+          clearTimeout(idleTimer)
+          idleTimer = setTimeout(() => { isIdle = true }, 150)
+          points.push({ x: e.clientX, y: e.clientY, opacity: 1 })
           if (points.length > CONFIG.maxPoints) points.shift()
         })
 
         function hexToRgba(hex, alpha) {
-          const r = parseInt(hex.slice(1, 3), 16)
-          const g = parseInt(hex.slice(3, 5), 16)
-          const b = parseInt(hex.slice(5, 7), 16)
+          const r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16)
           return `rgba(${r},${g},${b},${alpha})`
         }
 
         function draw() {
           requestAnimationFrame(draw)
           ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+          if (isIdle && points.length > 0) {
+            for (let i = 0; i < points.length; i++) {
+              const distFromTip = points.length - 1 - i
+              const fadeSpeed = 0.01 + (distFromTip / points.length) * 0.02
+              points[i].opacity -= fadeSpeed
+            }
+            points = points.filter(p => p.opacity > 0)
+          }
+
           if (points.length < 2) return
 
           for (let i = 1; i < points.length; i++) {
             const progress = i / points.length
-            const alpha = progress * 0.85
+            const baseAlpha = progress * 0.85
+            const opacity = points[i].opacity ?? 1
+            const alpha = baseAlpha * opacity
             const width = progress * CONFIG.maxWidth + 0.5
 
             ctx.beginPath()
@@ -183,103 +231,370 @@
             ctx.stroke()
           }
 
-          const tip = points[points.length - 1]
-          ctx.beginPath()
-          ctx.setLineDash([])
-          ctx.arc(tip.x, tip.y, 3, 0, Math.PI * 2)
-          ctx.fillStyle = hexToRgba(CONFIG.color, 0.9)
-          ctx.fill()
+          if (!isIdle && points.length > 0) {
+            const tip = points[points.length - 1]
+            ctx.beginPath()
+            ctx.setLineDash([])
+            ctx.arc(tip.x, tip.y, 3, 0, Math.PI * 2)
+            ctx.fillStyle = hexToRgba(CONFIG.color, 0.9)
+            ctx.fill()
+          }
         }
-
         draw()
       })()
   </script>
 
-  <div class="app">
+  <!-- ─── Navbar ─────────────────────────────────── -->
+  <nav class="navbar">
+    <button class="nav-item active" id="navYT" onclick="navigateTo('yt')">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+      </svg>
+      YouTube
+    </button>
+    <div class="nav-sep"></div>
+    <button class="nav-item" id="navTT" onclick="navigateTo('tt')">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.32 6.32 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.75a4.85 4.85 0 0 1-1.01-.06z" />
+      </svg>
+      TikTok
+    </button>
+  </nav>
 
-    <aside class="info-panel">
-      <div class="info-inner">
-        <div class="info-top">
-          <h1 class="info-title">KuroKyu Yt</h1>
-          <p class="info-email">This is just for personal use. this website using simple method to build. Thanks to
-            RapidApi this make my day more easier to dowload youtube without ads...</p>
-
-          <audio id="dogeSound" src="/src/assets/doge.mp3" preload="auto"></audio>
-          <img src="src/assets/doge.jpeg" alt="doge" class="doge-img" style="cursor:pointer"
-            onclick="(function(){ var s = document.getElementById('dogeSound'); s.currentTime = 0; s.play(); })()" />
-        </div>
-
-        <div class="info-bottom-wrapper">
-          <div class="info-col">
-            <div class="col-links">
-              <a href="https://github.com/Tuknwm" target="_blank">
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
-                  style="width:18px;height:18px;fill:currentColor;flex-shrink:0;">
-                  <path
-                    d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222 0 1.606-.015 2.898-.015 3.293 0 .322.216.694.825.576C20.565 21.795 24 17.298 24 12c0-6.63-5.37-12-12-12z" />
-                </svg>
-                GitHub 🡵
-              </a>
+  <!-- ─── Page: YouTube ──────────────────────────── -->
+  <div class="page page-active" id="pageYT">
+    <div class="app">
+      <aside class="info-panel">
+        <div class="info-inner">
+          <div class="info-top intro-animate intro-d1">
+            <h1 class="info-title parallax-title" id="ytTitle">
+              <span class="title-stroke-wrap">
+                <span class="title-stroke-layer">Youtube</span>
+                <span class="title-fill-layer">Youtube</span>
+              </span>
+            </h1>
+            <p class="info-email parallax-desc">This is just for personal use. this website using simple method to
+              build. Thanks to RapidApi this make my day more easier to dowload without ads...<br><br>Sometime
+              donwload may not working..</p>
+            <audio id="dogeSound" src="/src/assets/doge.mp3" preload="auto"></audio>
+            <img src="src/assets/doge.jpeg" alt="doge" class="doge-img parallax-img" style="cursor:pointer"
+              onclick="(function(){ var s=document.getElementById('dogeSound'); s.currentTime=0; s.play(); })()" />
+          </div>
+          <div class="info-bottom-wrapper parallax-links intro-animate intro-d2">
+            <div class="info-col">
+              <div class="col-links">
+                <a href="https://github.com/Tuknwm" target="_blank">
+                  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
+                    style="width:18px;height:18px;fill:currentColor;flex-shrink:0;">
+                    <path
+                      d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222 0 1.606-.015 2.898-.015 3.293 0 .322.216.694.825.576C20.565 21.795 24 17.298 24 12c0-6.63-5.37-12-12-12z" />
+                  </svg>
+                  GitHub 🡵
+                </a>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </aside>
+      </aside>
 
-    <main class="form-panel">
-      <div class="form-inner">
-        <h2 class="form-title">Hi There! ＞︿＜<br><span class="info-email">Fill the form below to download.</span></h2>
+      <main class="form-panel">
+        <div class="form-inner">
+          <h2 class="form-title intro-animate intro-d2">Hi There! ＞︿＜<br><span class="info-email">Fill the form below to
+              download.</span></h2>
 
-        <div class="field">
-          <label class="field-label" for="urlInput">YouTube URL</label>
-          <div class="field-input-wrap">
-            <input id="urlInput" class="field-input" type="text" placeholder="Paste your link" autocomplete="off"
-              spellcheck="false" />
-            <button id="clearBtn" class="clear-btn" onclick="clearInput()" style="display:none">✕</button>
+          <div class="field intro-animate intro-d3">
+            <label class="field-label" for="urlInput">YouTube URL</label>
+            <div class="field-input-wrap">
+              <input id="urlInput" class="field-input" type="text" placeholder="Paste your link" autocomplete="off"
+                spellcheck="false" />
+              <button id="clearBtn" class="clear-btn" onclick="clearInput()" style="display:none">✕</button>
+            </div>
           </div>
-        </div>
 
-        <div class="field">
-          <label class="field-label">Format</label>
-          <div class="format-options">
-            <span class="format-opt active" id="optMp4" onclick="setFormat('mp4')">MP4</span>
-            <span class="format-sep">|</span>
-            <span class="format-opt" id="optMp3" onclick="setFormat('mp3')">MP3</span>
+          <div class="field intro-animate intro-d4">
+            <label class="field-label">Format</label>
+            <div class="format-options">
+              <span class="format-opt active" id="optMp4" onclick="setFormat('mp4')">MP4</span>
+              <span class="format-sep">|</span>
+              <span class="format-opt" id="optMp3" onclick="setFormat('mp3')">MP3</span>
+            </div>
           </div>
-        </div>
 
-        <div>
-          <button class="submit-btn" id="submitBtn" onclick="startDownload()">
-            <span class="submit-text">Download</span>
-            <span class="submit-arrow">→</span>
-          </button>
-        </div>
-
-        <p class="status" id="status"></p>
-
-        <div class="progress" id="progress">
-          <div class="progress-fill" id="progressFill"></div>
-          <span class="progress-label" id="progressLabel"></span>
-        </div>
-
-        <div class="preview" id="preview">
-          <img class="preview-thumb" id="previewThumb" src="" alt="thumbnail" />
-          <div class="preview-info">
-            <p class="preview-title" id="previewTitle"></p>
-            <p class="preview-channel" id="previewChannel"></p>
-            <p class="preview-duration" id="previewDuration"></p>
+          <div class="intro-animate intro-d5">
+            <button class="submit-btn" id="submitBtn" onclick="startDownload()">
+              <span class="submit-text">Download</span>
+              <span class="submit-arrow">→</span>
+            </button>
           </div>
+
+          <p class="status" id="status"></p>
+
+          <div class="progress" id="progress">
+            <div class="progress-fill" id="progressFill"></div>
+            <span class="progress-label" id="progressLabel"></span>
+          </div>
+
+          <div class="preview" id="preview">
+            <img class="preview-thumb" id="previewThumb" src="" alt="thumbnail" />
+            <div class="preview-info">
+              <p class="preview-title" id="previewTitle"></p>
+              <p class="preview-channel" id="previewChannel"></p>
+              <p class="preview-duration" id="previewDuration"></p>
+            </div>
+          </div>
+
+          <a class="dl-link" id="dlLink" href="#" download>
+            <span></span>
+          </a>
         </div>
-
-        <a class="dl-link" id="dlLink" href="#" download>
-          <span></span>
-        </a>
-
-      </div>
-    </main>
-
+      </main>
+    </div>
   </div>
+
+  <!-- ─── Page: TikTok ──────────────────────────── -->
+  <div class="page" id="pageTT">
+    <div class="app">
+      <aside class="info-panel">
+        <div class="info-inner">
+          <div class="info-top intro-animate intro-d1">
+            <h1 class="info-title parallax-title" id="ttTitle">
+              <span class="title-stroke-wrap">
+                <span class="title-stroke-layer">Tiktok</span>
+                <span class="title-fill-layer">Tiktok</span>
+              </span>
+            </h1>
+            <p class="info-email parallax-desc">This is just for personal use. this website using simple method to
+              build. Thanks to RapidApi this make my day more easier to dowload without ads...<br><br>Sometime
+              donwload may not working..
+            </p>
+            <audio id="dogeSound2" src="/src/assets/doge.mp3" preload="auto"></audio>
+            <img src="src/assets/doge.jpg" alt="doge" class="doge-img parallax-img" style="cursor:pointer"
+              onclick="(function(){ var s=document.getElementById('dogeSound2'); s.currentTime=0; s.play(); })()" />
+          </div>
+          <div class="info-bottom-wrapper">
+            <div class="info-col">
+              <div class="col-links">
+                <a href="https://github.com/Tuknwm" target="_blank">
+                  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
+                    style="width:18px;height:18px;fill:currentColor;flex-shrink:0;">
+                    <path
+                      d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222 0 1.606-.015 2.898-.015 3.293 0 .322.216.694.825.576C20.565 21.795 24 17.298 24 12c0-6.63-5.37-12-12-12z" />
+                  </svg>
+                  GitHub 🡵
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <main class="form-panel">
+        <div class="form-inner">
+          <h2 class="form-title intro-animate intro-d2">TikTok Time! (≧▽≦)<br><span class="info-email">Paste your TikTok
+              link below.</span></h2>
+
+          <div class="field intro-animate intro-d3">
+            <label class="field-label" for="ttUrlInput">TikTok URL</label>
+            <div class="field-input-wrap">
+              <input id="ttUrlInput" class="field-input" type="text" placeholder="Paste your TikTok link"
+                autocomplete="off" spellcheck="false" />
+              <button id="ttClearBtn" class="clear-btn" onclick="ttClearInput()" style="display:none">✕</button>
+            </div>
+          </div>
+
+          <div class="field intro-animate intro-d4">
+            <label class="field-label">Format</label>
+            <div class="format-options">
+              <span class="format-opt active" id="ttOptMp4" onclick="ttSetFormat('mp4')">MP4</span>
+              <span class="format-sep">|</span>
+              <span class="format-opt" id="ttOptMp3" onclick="ttSetFormat('mp3')">MP3</span>
+            </div>
+          </div>
+
+          <div class="intro-animate intro-d5">
+            <button class="submit-btn" id="ttSubmitBtn" onclick="ttStartDownload()">
+              <span class="submit-text">Download</span>
+              <span class="submit-arrow">→</span>
+            </button>
+          </div>
+
+          <p class="status" id="ttStatus"></p>
+
+          <div class="progress" id="ttProgress">
+            <div class="progress-fill" id="ttProgressFill"></div>
+            <span class="progress-label" id="ttProgressLabel"></span>
+          </div>
+
+          <div class="preview" id="ttPreview">
+            <img class="preview-thumb" id="ttPreviewThumb" src="" alt="thumbnail" />
+            <div class="preview-info">
+              <p class="preview-title" id="ttPreviewTitle"></p>
+              <p class="preview-channel" id="ttPreviewChannel"></p>
+              <p class="preview-duration" id="ttPreviewDuration"></p>
+            </div>
+          </div>
+
+          <a class="dl-link" id="ttDlLink" href="#" download>
+            <span></span>
+          </a>
+        </div>
+      </main>
+    </div>
+  </div>
+
+
   <script type="module" src="/src/main.js"></script>
+  <script type="module" src="/src/tiktok.js"></script>
+
+  <div class="deco-logo" id="decoYT">
+    <svg viewBox="0 0 120 84" xmlns="http://www.w3.org/2000/svg">
+      <path class="deco-path" d="
+        M117.5 13.1
+        C116.2 8.3 112.4 4.5 107.6 3.2
+        C98.2 0.7 60 0.7 60 0.7
+        C60 0.7 21.8 0.7 12.4 3.2
+        C7.6 4.5 3.8 8.3 2.5 13.1
+        C0 22.5 0 42 0 42
+        C0 42 0 61.5 2.5 70.9
+        C3.8 75.7 7.6 79.5 12.4 80.8
+        C21.8 83.3 60 83.3 60 83.3
+        C60 83.3 98.2 83.3 107.6 80.8
+        C112.4 79.5 116.2 75.7 117.5 70.9
+        C120 61.5 120 42 120 42
+        C120 42 120 22.5 117.5 13.1Z
+      " />
+      <path class="deco-path" d="M48 30 L80 42 L48 54 Z" />
+    </svg>
+  </div>
+
+  <div class="deco-logo" id="decoTT">
+    <svg viewBox="0 0 96 110" xmlns="http://www.w3.org/2000/svg">
+      <path class="deco-path" d="
+        M78.4 27.6
+        C72.1 25.4 67 20.3 65 13.9
+        C64.4 11.9 64.1 9.8 64.1 7.6
+        L64.1 7
+        L46.5 7
+        L46.5 73.2
+        C46.5 79.5 41.4 84.6 35.1 84.6
+        C28.8 84.6 23.7 79.5 23.7 73.2
+        C23.7 66.9 28.8 61.8 35.1 61.8
+        C36.4 61.8 37.6 62 38.8 62.4
+        L38.8 44.4
+        C37.6 44.2 36.4 44.1 35.1 44.1
+        C19.1 44.1 6.1 57.2 6.1 73.2
+        C6.1 89.2 19.1 102.3 35.1 102.3
+        C51.1 102.3 64.1 89.2 64.1 73.2
+        L64.1 39.4
+        C70.5 44 78.3 46.7 86.7 46.7
+        L86.7 29.1
+        C83.1 29.1 80.6 28.5 78.4 27.6Z
+      " />
+    </svg>
+  </div>
+
+
+
+  <script>
+      // ── Parallax effect ───────────────────────────
+      ; (function () {
+        const layers = [
+          { selector: '.parallax-title', speed: 0.18 },
+          { selector: '.parallax-img', speed: 0.11 },
+          { selector: '.parallax-desc', speed: 0.06 },
+          { selector: '.parallax-links', speed: 0.03 },
+        ]
+
+        let ticking = false
+        let lastScrollY = window.scrollY
+
+        function applyParallax() {
+          const scrollY = window.scrollY
+          layers.forEach(({ selector, speed }) => {
+            document.querySelectorAll(selector).forEach(el => {
+              const offset = scrollY * speed
+              el.style.transform = `translateY(${offset}px)`
+            })
+          })
+          ticking = false
+        }
+
+        window.addEventListener('scroll', () => {
+          if (!ticking) {
+            requestAnimationFrame(applyParallax)
+            ticking = true
+          }
+        }, { passive: true })
+      })()
+  </script>
+
+  <script>
+    let _currentPage = 'yt'
+
+    function syncDecoLogo(page) {
+      const yt = document.getElementById('decoYT')
+      const tt = document.getElementById('decoTT')
+      const target = page === 'yt' ? yt : tt
+      const other = page === 'yt' ? tt : yt
+
+      other.classList.remove('visible')
+      void target.offsetWidth
+      target.classList.add('visible')
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => syncDecoLogo('yt'), 200)
+    })
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const fp = document.getElementById('pageYT')
+      if (fp) requestAnimationFrame(() => requestAnimationFrame(() => fp.classList.add('page-enter')))
+    })
+
+    window.navigateTo = function (page) {
+      if (page === _currentPage) return
+
+      const pageMap = { yt: 'pageYT', tt: 'pageTT' }
+      const navMap = { yt: 'navYT', tt: 'navTT' }
+
+      const fromEl = document.getElementById(pageMap[_currentPage])
+      const toEl = document.getElementById(pageMap[page])
+      const fromNav = document.getElementById(navMap[_currentPage])
+      const toNav = document.getElementById(navMap[page])
+
+      const PAGE_ORDER = { yt: 0, tt: 1 }
+      const goingForward = PAGE_ORDER[page] > PAGE_ORDER[_currentPage]
+
+      const exitClass = goingForward ? 'page-exit' : 'page-exit-right'
+      const enterClass = goingForward ? 'page-enter' : 'page-enter-left'
+
+      document.getElementById('decoYT').classList.remove('visible')
+      document.getElementById('decoTT').classList.remove('visible')
+
+      fromEl.classList.remove('page-enter', 'page-enter-left')
+      fromEl.classList.add(exitClass)
+      fromNav.classList.remove('active')
+
+      setTimeout(() => {
+        fromEl.classList.remove('page-active', 'page-enter', 'page-enter-left', 'page-exit', 'page-exit-right')
+
+        toEl.classList.remove('page-enter', 'page-enter-left')
+        toEl.classList.add('page-active')
+        toNav.classList.add('active')
+        _currentPage = page
+
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            toEl.classList.add(enterClass)
+            syncDecoLogo(page)
+          })
+        })
+      }, 400)
+    }
+  </script>
+
 </body>
 
 </html>

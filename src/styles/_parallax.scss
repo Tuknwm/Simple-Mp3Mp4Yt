@@ -1,0 +1,9 @@
+// _parallax.scss
+
+.parallax-title,
+.parallax-desc,
+.parallax-img,
+.parallax-links {
+    will-change: transform;
+    transition: transform 0.08s linear;
+}
